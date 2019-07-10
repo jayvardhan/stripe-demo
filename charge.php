@@ -10,11 +10,16 @@ require_once('vendor/autoload.php');
 // Get the payment token ID submitted by the form:
 $token = $_POST['stripeToken'];
 
+$customer = \Stripe\Customer::create([
+	"email" => "paying.user@example.com",
+  	"source" => $token,
+]);
+
 $charge = \Stripe\Charge::create([
-    'amount' => 999,
+    'amount' => 1000,
     'currency' => 'gbp',
-    'description' => 'Example charge',
-    'source' => $token,
+    'description' => 'Example Charge',
+    'customer' => $customer->id,
 ]);
 
 switch ($charge->status) {
