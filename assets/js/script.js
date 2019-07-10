@@ -28,6 +28,9 @@ var card = elements.create('card', {style: style});
 // Add an instance of the card Element into the `card-element` <div>.
 card.mount('#card-element');
 
+var loader = $('.loader');
+var result = $('.payment-status');
+
 // Handle real-time validation errors from the card Element.
 card.addEventListener('change', function(event) {
   var displayError = document.getElementById('card-errors');
@@ -41,10 +44,13 @@ card.addEventListener('change', function(event) {
 // Handle form submission.
 var form = document.getElementById('payment-form');
 form.addEventListener('submit', function(event) {
+  
   event.preventDefault();
+  loader.css('display','block');
 
   stripe.createToken(card).then(function(result) {
     if (result.error) {
+      loader.css('display','none');
       // Inform the user if there was an error.
       var errorElement = document.getElementById('card-errors');
       errorElement.textContent = result.error.message;
@@ -65,6 +71,7 @@ function stripeTokenHandler(token) {
   hiddenInput.setAttribute('value', token.id);
   form.appendChild(hiddenInput);
 
+  loader.css('display','none');
   // Submit the form
   form.submit();
 }
